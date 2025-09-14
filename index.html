@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game </title>
+    <link href="logo quiz game.png" type="image/x-icon" rel="icon">
+
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+
+    <style>
+        body {
+            background-image: url('Quiz Game bg.jpeg');
+            background-size: 100% 100%;
+            background-attachment: fixed;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .arabic-font {
+            font-family: 'Tajawal', sans-serif;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .bounce-hover:hover {
+            animation: bounce 0.5s;
+        }
+        .card-hover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .correct-answer {
+            background-color: #4ade80 !important;
+            color: white !important;
+        }
+        .wrong-answer {
+            background-color: #f87171 !important;
+            color: white !important;
+        }
+        .show-correct {
+            background-color: #4ade80 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen arabic-font">
+        <style>
+        
+
+
+      </style>
+    <style>
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .bounce-hover:hover {
+            animation: bounce 0.5s;
+        }
+        .card-hover:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .correct-answer {
+            background-color: #4ade80 !important;
+            color: white !important;
+        }
+        .wrong-answer {
+            background-color: #f87171 !important;
+            color: white !important;
+        }
+        .show-correct {
+            background-color: #4ade80 !important;
+            color: white !important;
+        }
+        body {
+            font-family: 'Tajawal', sans-serif;
+        }
+        .arabic-font {
+            font-family: 'Tajawal', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-purple-50 min-h-screen arabic-font">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Game Container -->
+        <div id="game-container" class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden fade-in">
+            <!-- Step 0: Game Mode Selection -->
+            <div id="step-0" class="p-8 text-center">
+                <h1 class="text-4xl font-bold text-purple-600 mb-6">لعبة أسئلة للأطفال</h1>
+                <p class="text-lg text-gray-600 mb-8">اختر طريقة اللعب التي تفضلها!</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-blue-100 rounded-xl p-6 cursor-pointer bounce-hover transition-all duration-300 hover:bg-blue-200" onclick="selectGameMode('local')">
+                        <i class="fas fa-users text-5xl text-blue-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-blue-800 mb-2">اللعبة المحلية</h3>
+                        <p class="text-gray-600">العب مع الأصدقاء على نفس الجهاز</p>
+                    </div>
+                    
+                    <div class="bg-green-100 rounded-xl p-6 cursor-pointer bounce-hover transition-all duration-300 hover:bg-green-200" onclick="selectGameMode('online')">
+                        <i class="fas fa-globe text-5xl text-green-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-green-800 mb-2">اللعبة عبر الإنترنت</h3>
+                        <p class="text-gray-600">العب مع الأصدقاء عن بعد</p>
+                    </div>
+                    
+                    <div class="bg-yellow-100 rounded-xl p-6 cursor-pointer bounce-hover transition-all duration-300 hover:bg-yellow-200" onclick="selectGameMode('random')">
+                        <i class="fas fa-random text-5xl text-yellow-600 mb-4"></i>
+                        <h3 class="text-xl font-semibold text-yellow-800 mb-2">وضع عشوائي</h3>
+                        <p class="text-gray-600">أسئلة عشوائية من جميع الفئات</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1: Number of Players (Local Mode Only) -->
+            <div id="step-1" class="hidden p-8 text-center">
+                <h2 class="text-3xl font-bold text-purple-600 mb-6">كم عدد اللاعبين؟</h2>
+                <p class="text-lg text-gray-600 mb-8">اختر عدد اللاعبين (2-6)</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-md mx-auto">
+                    <button onclick="setPlayerCount(2)" class="bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold py-4 px-6 rounded-lg text-xl transition-all">2</button>
+                    <button onclick="setPlayerCount(3)" class="bg-green-100 hover:bg-green-200 text-green-800 font-bold py-4 px-6 rounded-lg text-xl transition-all">3</button>
+                    <button onclick="setPlayerCount(4)" class="bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-bold py-4 px-6 rounded-lg text-xl transition-all">4</button>
+                    <button onclick="setPlayerCount(5)" class="bg-red-100 hover:bg-red-200 text-red-800 font-bold py-4 px-6 rounded-lg text-xl transition-all">5</button>
+                    <button onclick="setPlayerCount(6)" class="bg-purple-100 hover:bg-purple-200 text-purple-800 font-bold py-4 px-6 rounded-lg text-xl transition-all">6</button>
+                </div>
+                
+                <button onclick="backToStep(0)" class="mt-8 bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-all">
+                    <i class="fas fa-arrow-right mr-2"></i> رجوع
+                </button>
+            </div>
+
+            <!-- Step 2: Player Names -->
+            <div id="step-2" class="hidden p-8">
+                <h2 class="text-3xl font-bold text-purple-600 mb-6 text-center">أدخل أسماء اللاعبين</h2>
+                
+                <div id="player-name-inputs" class="max-w-md mx-auto space-y-4 mb-8">
+                    <!-- Player name inputs will be added here dynamically -->
+                </div>
+                
+                <div class="flex justify-center space-x-4">
+                    <button onclick="backToStep(1)" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-all">
+                        <i class="fas fa-arrow-right mr-2"></i> رجوع
+                    </button>
+                    <button onclick="savePlayerNames()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition-all">
+                        متابعة <i class="fas fa-arrow-left ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Category Selection -->
+            <div id="step-3" class="hidden p-8">
+                <h2 class="text-3xl font-bold text-purple-600 mb-6 text-center">اختر فئة الأسئلة</h2>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <!-- Category cards will be added here dynamically -->
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button onclick="backToStep(2)" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-all mr-4">
+                        <i class="fas fa-arrow-right mr-2"></i> رجوع
+                    </button>
+                    <button onclick="selectRandomCategory()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-6 rounded-lg transition-all">
+                        <i class="fas fa-random mr-2"></i> فئة عشوائية
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Question Display -->
+            <div id="step-4" class="hidden p-6 md:p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <div id="current-player" class="bg-purple-100 text-purple-800 font-semibold py-2 px-4 rounded-lg"></div>
+                    <div id="score-display" class="bg-blue-100 text-blue-800 font-semibold py-2 px-4 rounded-lg"></div>
+                </div>
+                
+                <div id="question-container" class="bg-gray-50 rounded-xl p-6 mb-6">
+                    <h3 id="question-category" class="text-lg font-semibold text-purple-600 mb-2"></h3>
+                    <h2 id="question-text" class="text-2xl font-bold text-gray-800 mb-6"></h2>
+                    
+                    <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Options will be added here dynamically -->
+                    </div>
+                </div>
+                
+                <div class="flex justify-between">
+                    <button id="skip-btn" onclick="skipQuestion()" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-all">
+                        <i class="fas fa-forward mr-2"></i> تخطي
+                    </button>
+                    <button id="next-btn" onclick="nextQuestion()" class="hidden bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition-all">
+                        التالي <i class="fas fa-arrow-left ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Final Results -->
+            <div id="final-results" class="hidden p-8 text-center">
+                <h2 class="text-4xl font-bold text-purple-600 mb-6">انتهت اللعبة!</h2>
+                <h3 class="text-2xl font-semibold text-gray-700 mb-8">النتائج النهائية</h3>
+                
+                <div id="results-container" class="max-w-md mx-auto space-y-4 mb-8">
+                    <!-- Results will be added here dynamically -->
+                </div>
+                
+                <div class="mt-8">
+                    <p id="encouragement-message" class="text-xl font-semibold mb-6"></p>
+                    <button onclick="restartGame()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-all mr-4">
+                        <i class="fas fa-redo mr-2"></i> لعب مرة أخرى
+                    </button>
+                    <button onclick="backToStep(0)" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-8 rounded-lg text-lg transition-all">
+                        <i class="fas fa-home mr-2"></i> القائمة الرئيسية
+                    </button>
+                </div>
+            </div>
+
+            <!-- Online Mode Components -->
+            <div id="online-host" class="hidden p-8 text-center">
+                <h2 class="text-3xl font-bold text-purple-600 mb-6">لعبة عبر الإنترنت</h2>
+                <p class="text-lg text-gray-600 mb-4">شارك هذا الرمز مع أصدقائك للانضمام:</p>
+                
+                <div class="bg-gray-100 rounded-lg p-4 inline-block mb-6">
+                    <h3 class="text-2xl font-bold text-purple-700 mb-2" id="game-code">123456</h3>
+                    <p class="text-gray-600">أو امسح رمز الاستجابة السريعة هذا</p>
+                </div>
+                
+                <div id="qrcode" class="flex justify-center mb-8"></div>
+                
+                <div id="player-list" class="max-w-md mx-auto space-y-2 mb-8">
+                    <div class="bg-blue-100 rounded-lg p-3 font-semibold">في انتظار اللاعبين...</div>
+                </div>
+                
+                <button onclick="startOnlineGame()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition-all mr-4">
+                    بدء اللعبة
+                </button>
+                <button onclick="backToStep(0)" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-all">
+                    <i class="fas fa-arrow-right mr-2"></i> رجوع
+                </button>
+            </div>
+            
+            <div id="online-join" class="hidden p-8 text-center">
+                <h2 class="text-3xl font-bold text-purple-600 mb-6">الانضمام إلى لعبة عبر الإنترنت</h2>
+                <p class="text-lg text-gray-600 mb-4">أدخل رمز اللعبة المقدم من المضيف:</p>
+                
+                <div class="max-w-md mx-auto mb-6">
+                    <input type="text" id="join-code" placeholder="أدخل الرمز المكون من 6 أرقام" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center text-xl font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+                
+                <button onclick="joinOnlineGame()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition-all mr-4">
+                    الانضمام إلى اللعبة
+                </button>
+                <button onclick="backToStep(0)" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-6 rounded-lg transition-all">
+                    <i class="fas fa-arrow-right mr-2"></i> رجوع
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state
+        const gameState = {
+            mode: null, // 'local', 'online', 'random'
+            playerCount: 0,
+            players: [],
+            currentPlayerIndex: 0,
+            currentCategory: null,
+            questions: [],
+            currentQuestionIndex: 0,
+            scores: {},
+            usedQuestionIndices: [],
+            gameCode: null,
+            isHost: false
+        };
+
+        // Categories and questions
+        const categories = {
+            'كرة القدم ': {
+                icon: 'fa-futbol',
+                color: 'bg-blue-100',
+                textColor: 'text-blue-800',
+                hoverColor: 'hover:bg-blue-200',
+                questions: [
+                    {
+                        question: "كم عدد اللاعبين في فريق كرة القدم أثناء المباراة؟",
+                        options: ["9", "10", "11", "12"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي بلد فاز بكأس العالم 2022؟",
+                        options: ["فرنسا", "البرازيل", "الأرجنتين", "ألمانيا"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما اسم الكأس الذي يُمنح لفائزين كأس العالم؟",
+                        options: ["الكرة الذهبية", "كأس الفيفا", "كأس العالم", "كأس الأبطال"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما هو اللاعب المعروف باسم 'الملك' في كرة القدم؟",
+                        options: ["ليونيل ميسي", "كريستيانو رونالدو", "بيليه", "دييغو مارادونا"],
+                        answer: 2
+                    },
+                    {
+                        question: "كم مدة مباراة كرة القدم القياسية؟",
+                        options: ["80 دقيقة", "90 دقيقة", "100 دقيقة", "120 دقيقة"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما لون البطاقة التي يظهرها الحكم للخطأ الجسيم؟",
+                        options: ["أصفر", "أحمر", "أزرق", "أخضر"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي بلد فاز بأكبر عدد من كؤوس العالم؟",
+                        options: ["ألمانيا", "إيطاليا", "البرازيل", "الأرجنتين"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما اسم أكبر مسابقة للأندية في أوروبا؟",
+                        options: ["الدوري الأوروبي", "الدوري الإنجليزي", "دوري الأبطال", "الدوري الإسباني"],
+                        answer: 2
+                    },
+                    {
+                        question: "من هو اللاعب الذي سجل أكبر عدد من الأهداف في تاريخ كأس العالم؟",
+                        options: ["ليونيل ميسي", "كريستيانو رونالدو", "بيليه", "ميروسلاف كلوزه"],
+                        answer: 3
+                    },
+                    {
+                        question: "ما هي قاعدة التسلل في كرة القدم؟",
+                        options: [
+                            "لا يمكن للاعب أن يكون خلف آخر مدافع عند تمرير الكرة له",
+                            "لا يمكن للاعب لمس الكرة بيديه",
+                            "لا يمكن للاعب التسجيل مباشرة من رمية التماس",
+                            "لا يمكن للاعب أن يكون في منطقة جزاء الخصم"
+                        ],
+                        answer: 0
+                    },
+                   {
+                question: "من فاز بكأس العالم 2018؟",
+                options: ["البرازيل", "ألمانيا", "فرنسا", "الأرجنتين"],
+                answer: 2
+            },
+            {
+                question: "من سجل هدف الفوز في نهائي كأس العالم 2014؟",
+                options: ["ميسي", "مüller", "كافاني", "جيمس رودريغيز"],
+                answer: 1
+            },
+            {
+                question: "أي منتخب يُعرف بالأسود الثلاثة؟",
+                options: ["ألمانيا", "إنجلترا", "إسبانيا", "إيطاليا"],
+                answer: 1
+            },
+            {
+                question: "كم عدد اللاعبين في الفريق الواحد في المباراة؟",
+                options: ["9", "10", "11", "12"],
+                answer: 2
+            },
+            {
+                question: "أي نادي يُعرف بالريدز؟",
+                options: ["تشيلسي", "ليفربول", "مانشستر يونايتد", "أرسنال"],
+                answer: 1
+            },
+            {
+                question: "من هو أفضل هداف في تاريخ كأس العالم؟",
+                options: ["رونالدو البرازيلي", "ميروسلاف كلوزه", "بيليه", "مارادونا"],
+                answer: 1
+            },
+            {
+                question: "أين أقيمت كأس العالم 2010؟",
+                options: ["جنوب إفريقيا", "البرازيل", "روسيا", "ألمانيا"],
+                answer: 0
+            },
+            {
+                question: "أي منتخب يُعرف بالساموراي الأزرق؟",
+                options: ["اليابان", "كوريا الجنوبية", "أستراليا", "المكسيك"],
+                answer: 0
+            },
+            {
+                question: "من فاز بدوري أبطال أوروبا 2020؟",
+                options: ["بايرن ميونخ", "برشلونة", "ريال مدريد", "يوفنتوس"],
+                answer: 0
+            },
+            {
+                question: "كم عدد دقائق المباراة الرسمية؟",
+                options: ["90", "80", "100", "120"],
+                answer: 0
+            },
+            {
+                question: "أين يقع ملعب كامب نو؟",
+                options: ["مدريد", "برشلونة", "مانشستر", "تورينو"],
+                answer: 1
+            },
+            {
+                question: "من هو ملك الكرة القدم المعروف بـ CR7؟",
+                options: ["ميسي", "رونالدو", "نيمار", "سوارز"],
+                answer: 1
+            },
+            {
+                question: "أي فريق يُعرف بالبلوز؟",
+                options: ["تشيلسي", "مانشستر يونايتد", "ليفربول", "باريس سان جيرمان"],
+                answer: 0
+            },
+            {
+                question: "من سجل الهاتريك في نهائي دوري أبطال أوروبا 2005؟",
+                options: ["زيدان", "شيكابالا", "هيرنانديز", "كوستاكورتا"],
+                answer: 3
+            },
+            {
+                question: "كم مرة فاز المنتخب البرازيلي بكأس العالم؟",
+                options: ["4", "5", "6", "7"],
+                answer: 1
+            },
+            {
+                question: "من فاز بالكرة الذهبية 2021؟",
+                options: ["ميسي", "رونالدو", "نيمار", "لوكا مودريتش"],
+                answer: 0
+            },
+            {
+                question: "أي منتخب يُعرف بالمانشافت؟",
+                options: ["إيطاليا", "ألمانيا", "فرنسا", "إنجلترا"],
+                answer: 1
+            },
+            {
+                question: "أين أقيمت أول نسخة لكأس العالم؟",
+                options: ["أوروجواي", "البرازيل", "إيطاليا", "ألمانيا"],
+                answer: 0
+            },
+            {
+                question: "ما هو لقب ليونيل ميسي؟",
+                options: ["البرغوث", "الفهد", "الأسد", "المايسترو"],
+                answer: 0
+            },
+            {
+    question: "كم عدد الفرق المشاركة في كأس العالم 2022؟",
+    options: ["32", "28", "24", "36"],
+    answer: 0
+},
+{question:"من فاز بكأس أمم أوروبا 2020؟", options:["إيطاليا","إنجلترا","فرنسا","ألمانيا"], answer:0},
+{question:"أي لاعب يُعرف بالقديس؟", options:["بيليه","رونالدو","ميسي","زيكو"], answer:0},
+{question:"أين أقيمت كأس العالم 2006؟", options:["ألمانيا","إيطاليا","فرنسا","البرازيل"], answer:0}
+
+
+
+
+
+                ]
+            },
+            'ثقافة  📚': {
+                icon: 'fa-book',
+                color: 'bg-green-100',
+                textColor: 'text-green-800',
+                hoverColor: 'hover:bg-green-200',
+                questions: [
+                    {
+                        question: "من كتب 'هاري بوتر'؟",
+                        options: ["ج.ر.ر. تولكين", "ج.ك. رولينج", "سي.إس. لويس", "رولد دال"],
+                        answer: 1
+                    },
+                    {
+                        question: "من هو الفنان الشهير الذي رسم الموناليزا؟",
+                        options: ["فان جوخ", "بابلو بيكاسو", "ليوناردو دا فينشي", "مايكل أنجلو"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما هي عاصمة فرنسا؟",
+                        options: ["برلين", "مدريد", "باريس", "روما"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي آلة موسيقية تحتوي على 88 مفتاحًا؟",
+                        options: ["جيتار", "كمان", "بيانو", "قيثارة"],
+                        answer: 2
+                    },
+                    {
+                        question: "من هو إله البحر في الميثولوجيا اليونانية؟",
+                        options: ["زيوس", "بوسيدون", "هاديس", "أبولو"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي بلد يعرف باسم أرض الشمس المشرقة؟",
+                        options: ["الصين", "اليابان", "كوريا الجنوبية", "تايلاند"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما اسم الرقصة التقليدية في هاواي؟",
+                        options: ["سالسا", "هولا", "تانغو", "فلامنكو"],
+                        answer: 1
+                    },
+                    {
+                        question: "من هو العالم الشهير الذي طور نظرية النسبية؟",
+                        options: ["إسحاق نيوتن", "ألبرت أينشتاين", "غاليليو غاليلي", "ستيفن هوكينج"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما هي اللغة الرئيسية في البرازيل؟",
+                        options: ["الإسبانية", "البرتغالية", "الفرنسية", "الإنجليزية"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي حضارة قديمة بنت الأهرامات؟",
+                        options: ["الإغريق", "الرومان", "المصريون", "المايا"],
+                        answer: 2
+                    },
+                 {question: "أي مدينة تعتبر عاصمة الثقافة العربية لعام 2024؟", options: ["الرباط","القاهرة","الجزائر","دمشق"], answer: 1},
+                {question: "من كتب رواية 'الأبله'؟", options: ["دوستويفسكي","تولستوي","جبران خليل جبران","نجيب محفوظ"], answer: 0},
+                {question: "ما هي لغة الشعر الجاهلي؟", options: ["العربية","الفارسية","اللاتينية","اليونانية"], answer: 0},
+                {question: "من هو مؤسس الفن التشكيلي الحديث؟", options: ["بيكاسو","فان غوغ","دالي","رودين"], answer: 0},
+                {question: "ما هو أشهر معرض فني في فرنسا؟", options: ["اللوفر","ميتروبوليتان","البرادو","الأكاديمية"], answer: 0},
+                {question: "من كتب مسرحية 'هاملت'؟", options: ["شكسبير","ألفريد","سوفوكليس","تولستوي"], answer: 0},
+                {question: "أي دولة اشتهرت بالأوبرا والكلاسيكيات؟", options: ["النمسا","فرنسا","إيطاليا","روسيا"], answer: 0},
+                {question: "ما هو الكتاب المقدس للمسيحيين؟", options: ["الإنجيل","القرآن","التوراة","الفيدا"], answer: 0},
+                {question: "أين نشأت الحضارة الإغريقية؟", options: ["اليونان","روما","مصر","العراق"], answer: 0},
+                {question: "من رسم لوحة الموناليزا؟", options: ["دافنشي","بيكاسو","رودان","فان غوغ"], answer: 0},
+                {question: "ما هو أقدم متحف في العالم؟", options: ["المتحف البريطاني","اللوفر","المتحف المصري","الأورانجري"], answer: 0},
+                {question: "ما هي لغة الأوبرا التقليدية؟", options: ["الإيطالية","الفرنسية","الألمانية","الإنجليزية"], answer: 0},
+                {question: "أي مدينة مشهورة بمهرجان البندقية السينمائي؟", options: ["فينيسيا","روما","ميلانو","فلورنسا"], answer: 0},
+                {question: "من كتب رواية 'الحرب والسلم'؟", options: ["تولستوي","دوستويفسكي","شيلر","غوته"], answer: 0},
+                {question: "ما هو أقدم شكل للكتابة؟", options: ["المسمارية","الهيروغليفية","الصينية","اللاتينية"], answer: 0},
+                {question: "من هو مؤلف سيمفونية المصباح السحري؟", options: ["بيتهوفن","موتسارت","تشايكوفسكي","باخ"], answer: 0},
+                {question: "أي دولة مشهورة بالفلامنكو؟", options: ["إسبانيا","إيطاليا","البرتغال","المكسيك"], answer: 0},
+                {question: "من كتب 'الكوميديا الإلهية'؟", options: ["دانتي","شيكسبير","هوميروس","سوفوكليس"], answer: 0},
+                {question: "ما هي عاصمة الأدب العربي؟", options: ["بغداد","القاهرة","الرباط","دمشق"], answer: 0},
+                {question: "أي شاعر مشهور بالحب والغزل في العصر الجاهلي؟", options: ["عنترة بن شداد","امرؤ القيس","لبيد","زهير بن أبي"], answer:0},
+                {question:"من كتب رواية 'مئة عام من العزلة'؟", options:["ماركيز","نجيب محفوظ","تولستوي","هوميروس"], answer:0},
+        {question:"ما هو أشهر مهرجان سينمائي في كان؟", options:["مهرجان كان","البندقية","برلين","سان سباستيان"], answer:0},
+        {question:"من هو مؤلف مسرحية 'روميو وجولييت'؟", options:["شكسبير","تولستوي","دوستويفسكي","ألفريد"], answer:0}
+
+
+
+
+                ]
+            },
+            'حيوانات  🐾': {
+                icon: 'fa-dog',
+                color: 'bg-yellow-100',
+                textColor: 'text-yellow-800',
+                hoverColor: 'hover:bg-yellow-200',
+                questions: [
+                    {
+                        question: "ما هو أكبر حيوان على الأرض؟",
+                        options: ["فيل", "الحوت الأزرق", "زرافة", "دب قطبي"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي طائر معروف بريشه الملون وقدرته على تقليد الأصوات؟",
+                        options: ["نسر", "ببغاء", "طاووس", "بومة"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما هو أسرع حيوان بري؟",
+                        options: ["أسد", "فهد", "كلب سلوقي", "ظبي"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي حيوان يعرف باسم 'ملك الغابة'؟",
+                        options: ["نمر", "أسد", "غوريلا", "فيل"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما اسم صغير الكنغر؟",
+                        options: ["شبل", "جرو", "جوي", "عجل"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي حيوان يمكنه تغيير لونه ليتناسب مع محيطه؟",
+                        options: ["أخطبوط", "حرباء", "سمك الحبار", "كل ما سبق"],
+                        answer: 3
+                    },
+                    {
+                        question: "ما هو الثديي الوحيد القادر على الطيران الحقيقي؟",
+                        options: ["سنجاب طائر", "خفاش", "كولوغو", "بطريق"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي حيوان لديه أطول عمر؟",
+                        options: ["فيل", "سلحفاة غالاباغوس", "حوت مقوس الرأس", "قرش جرينلاند"],
+                        answer: 3
+                    },
+                    {
+                        question: "ما اسم مجموعة الأسود؟",
+                        options: ["قطيع", "حزمة", "فخر", "سرب"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي حيوان معروف بأنه يضحك عند الدغدغة؟",
+                        options: ["شمبانزي", "دلفين", "فأر", "كلب"],
+                        answer: 2
+            
+                    },
+                    {question: "أين يعيش الباندا عادة؟", options: ["أفريقيا","أمريكا الجنوبية","الصين","أستراليا"], answer: 2},
+                {question: "أكبر حيوان بري في العالم هو؟", options: ["الفيل","الزرافة","وحيد القرن","فرس النهر"], answer: 0},
+                {question: "أسرع حيوان بري؟", options: ["الفهد","الأسد","الغزال","الفرس"], answer: 0},
+                {question: "أين يعيش الكنغر؟", options: ["أستراليا","نيوزيلندا","إندونيسيا","الهند"], answer: 0},
+                {question: "أطول حيوان في العالم؟", options: ["الزرافة","الفيل","النعامة","الحصان"], answer: 0},
+                {question: "ما هو الحيوان الذي ينام واقفًا غالبًا؟", options: ["الحصان","الفيل","الأسد","الغزال"], answer: 0},
+                {question: "ما هو الحيوان الوطني لمصر؟", options: ["الصقر","النسر","التمساح","الأسد"], answer: 0},
+                {question: "أي من الحيوانات التالية ثدييات؟", options: ["الأسد","التمساح","السلحفاة","الثعبان"], answer: 0},
+                {question: "ما الحيوان الذي يعرف بالملك الغابة؟", options: ["الأسد","النمر","الفهد","الذئب"], answer: 0},
+                {question: "أين يعيش الدب القطبي؟", options: ["القطب الشمالي","القطب الجنوبي","ألاسكا","روسيا"], answer: 0},
+                {question: "أي من الحيوانات التالية لا تستطيع الطيران؟", options: ["النعامة","العصفور","الخفاش","النسر"], answer: 0},
+                {question: "ما هو أكبر طائر على وجه الأرض؟", options: ["النعامة","النسر","الطاووس","الديك"], answer: 0},
+                {question: "أين يعيش الجمل؟", options: ["الصحراء","الغابات","الجبال","السهول"], answer: 0},
+                {question: "أسرع طائر في العالم؟", options: ["الصقر","النسر","العصفور","البومة"], answer: 0},
+                {question: "أي من الحيوانات التالية من القوارض؟", options: ["الجرذ","الأسد","الفيل","التمساح"], answer: 0},
+                {question: "كم عدد أرجل العنكبوت؟", options: ["8","6","10","4"], answer: 0},
+                {question: "ما هو الحيوان الذي يطلق عليه 'الوحش البحري'؟", options: ["الحوت","الدلفين","القرش","السلحفاة"], answer: 0},
+                {question: "أين يعيش سمك القرش الأبيض الكبير؟", options: ["المحيط الأطلسي","المحيط الهادئ","المحيط الهندي","البحيرات"], answer: 0},
+                {question: "أي من هذه الحيوانات زاحف؟", options: ["التمساح","الأسد","الفيل","الحصان"], answer: 0},
+                {question: "ما هو الحيوان الذي يُعرف بأنه أذكى الثدييات البحرية؟", options: ["الدلفين","الفقمة","الحوت","القرش"], answer: 0},
+                {question:"ما الحيوان الذي يهاجر لمسافات طويلة؟", options:["الطائر المهاجر","الأسد","الفيل","الغزال"], answer:0},
+        {question:"أين يعيش التمساح غالباً؟", options:["المستنقعات","الغابات","الجبال","الصحراء"], answer:0},
+        {question:"ما هو الحيوان الذي لديه سُم طويل؟", options:["الأفعى","الأسد","الفيل","التمساح"], answer:0}
+
+                ]
+            },
+            'دينية  🕌': {
+                icon: 'fa-mosque',
+                color: 'bg-purple-100',
+                textColor: 'text-purple-800',
+                hoverColor: 'hover:bg-purple-200',
+                questions: [
+                    {
+                        question: "ما هو الكتاب المقدس في الإسلام؟",
+                        options: ["الإنجيل", "التوراة", "القرآن", "الجيتا"],
+                        answer: 2
+                    },
+                    {
+                        question: "من هو النبي المعروف بأبي الأنبياء في الإسلام؟",
+                        options: ["محمد", "إبراهيم", "موسى", "عيسى"],
+                        answer: 1
+                    },
+                    {
+                        question: "كم عدد أركان الإسلام؟",
+                        options: ["4", "5", "6", "7"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما هو الشهر الأول في التقويم الهجري؟",
+                        options: ["رمضان", "محرم", "شوال", "ذو الحجة"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي مدينة تعتبر الأقدس في الإسلام؟",
+                        options: ["مكة", "المدينة", "القدس", "القاهرة"],
+                        answer: 0
+                    },
+                    {
+                        question: "ما اسم الشهادة الإسلامية؟",
+                        options: ["الصلاة", "الشهادة", "الزكاة", "الحج"],
+                        answer: 1
+                    },
+                    {
+                        question: "من هو الملاك الذي نقل الرسائل إلى النبي محمد؟",
+                        options: ["ميكائيل", "إسرافيل", "جبريل", "عزرائيل"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما اسم الرحلة الليلية للنبي محمد؟",
+                        options: ["الهجرة", "الإسراء والمعراج", "الجهاد", "الطواف"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي سورة تسمى 'قلب القرآن'؟",
+                        options: ["الفاتحة", "البقرة", "يس", "الإخلاص"],
+                        answer: 2
+                    },
+                    {
+                        question: "كم مرة يصلي المسلمون في اليوم؟",
+                        options: ["3", "4", "5", "6"],
+                        answer: 2
+                    },
+                    {question: "كم عدد ركعات صلاة الفجر؟", options: ["ركعتان","ثلاث ركعات","أربع ركعات","خمس ركعات"], answer: 0},
+                {question: "ما هي أول سورة نزلت في القرآن؟", options: ["الفاتحة","العلق","المدثر","النساء"], answer: 1},
+                {question: "ما هو الركن الأول من أركان الإسلام؟", options: ["الشهادة","الصلاة","الزكاة","الحج"], answer: 0},
+                {question: "كم عدد الصلوات اليومية؟", options: ["4","5","6","3"], answer: 1},
+                {question: "أي يوم هو عيد الفطر؟", options: ["اليوم الأول من شوال","اليوم الأخير من رمضان","اليوم العاشر من ذو الحجة","اليوم الأول من رمضان"], answer: 0},
+                {question: "كم عدد ركعات صلاة المغرب؟", options: ["3","4","2","5"], answer: 0},
+                {question: "ما هي القبلة في الصلاة؟", options: ["الكعبة","القدس","مكة","المدينة"], answer: 0},
+                {question: "ما هي أكبر سورة في القرآن؟", options: ["البقرة","آل عمران","النساء","التوبة"], answer: 0},
+                {question: "من هو خاتم الأنبياء؟", options: ["محمد","عيسى","موسى","نوح"], answer: 0},
+                {question: "ما هو الشهر الذي يصوم فيه المسلمون؟", options: ["رمضان","شوال","ذو الحجة","محرم"], answer: 0},
+                {question: "ما هي ليلة القدر؟", options: ["ليلة خير من ألف شهر","ليلة الإسراء والمعراج","ليلة النصف من شعبان","ليلة المولد"], answer: 0},
+                {question: "كم ركعة صلاة العيد؟", options: ["2","3","4","1"], answer: 0},
+                {question: "ما هو اتجاه القبلة؟", options: ["الشرق","الغرب","الشمال","الجنوب"], answer: 0},
+                {question: "ما هو معنى التوحيد؟", options: ["الإيمان بالله واحد","الإيمان بالملائكة","الصلاة","الزكاة"], answer: 0},
+                {question: "كم عدد أركان الإسلام؟", options: ["5","6","4","3"], answer: 0},
+                {question: "ما هو اسم القرآن الكامل؟", options: ["القرآن الكريم","الإنجيل","التوراة","الزبور"], answer: 0},
+                {question: "من هو أول الخلفاء الراشدين؟", options: ["أبو بكر","عمر","عثمان","علي"], answer: 0},
+                {question: "ما هو الركن الثاني من أركان الإسلام؟", options: ["الصلاة","الشهادة","الزكاة","الحج"], answer: 0},
+                {question: "كم عدد ركعات صلاة الظهر؟", options: ["4","3","2","5"], answer: 0},
+                {question: "ما هو الركن الرابع من أركان الإسلام؟", options: ["الحج","الشهادة","الزكاة","الصلاة"], answer: 0},
+                {question:"كم عدد سور القرآن؟", options:["114","120","112","100"], answer:0},
+        {question:"ما هو الركن الثالث من أركان الإسلام؟", options:["الزكاة","الصلاة","الشهادة","الحج"], answer:0},
+        {question:"كم عدد أشهر الحج؟", options:["1","2","12","3"], answer:0}
+                ]
+            },
+            'تاريخ  🏺': {
+                icon: 'fa-landmark',
+                color: 'bg-red-100',
+                textColor: 'text-red-800',
+                hoverColor: 'hover:bg-red-200',
+                questions: [
+                    {
+                        question: "من كان أول رئيس للولايات المتحدة؟",
+                        options: ["توماس جيفرسون", "جورج واشنطن", "أبراهام لينكولن", "جون آدامز"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي حضارة قديمة بنت الهرم الأكبر في الجيزة؟",
+                        options: ["الإغريق", "الرومان", "المصريون", "المايا"],
+                        answer: 2
+                    },
+                    {
+                        question: "في أي عام انتهت الحرب العالمية الثانية؟",
+                        options: ["1943", "1945", "1947", "1950"],
+                        answer: 1
+                    },
+                    {
+                        question: "من كانت الملكة الشهيرة لمصر القديمة؟",
+                        options: ["نفرتيتي", "حتشبسوت", "كليوباترا", "كل ما سبق"],
+                        answer: 3
+                    },
+                    {
+                        question: "أي إمبراطورية حكمها يوليوس قيصر؟",
+                        options: ["اليونانية", "الرومانية", "المصرية", "الفارسية"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما اسم السفينة التي حملت الحجاج إلى أمريكا عام 1620؟",
+                        options: ["سانتا ماريا", "مايفلاور", "بينتا", "نينا"],
+                        answer: 1
+                    },
+                    {
+                        question: "من اخترع الهاتف؟",
+                        options: ["توماس إديسون", "ألكسندر جراهام بيل", "نيكولا تيسلا", "غولييلمو ماركوني"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي حرب دارت بين المناطق الشمالية والجنوبية للولايات المتحدة؟",
+                        options: ["الحرب الثورية", "الحرب الأهلية", "الحرب العالمية الأولى", "حرب 1812"],
+                        answer: 1
+                    },
+                    {
+                        question: "من كان أول رجل يمشي على القمر؟",
+                        options: ["باز ألدرين", "نيل أرمسترونغ", "يوري جاجارين", "جون غلين"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي عجائب الدنيا القديمة كانت موجودة في بابل؟",
+                        options: ["الهرم الأكبر", "حدائق بابل المعلقة", "تمثال رودس", "منارة الإسكندرية"],
+                        answer: 1
+                    },
+                    {question:"في أي سنة بدأت الحرب العالمية الثانية؟", options:["1914","1939","1945","1929"], answer:1},
+                {question:"من اكتشف أمريكا؟", options:["كولومبوس","ماجلان","فينسنت","كوك"], answer:0},
+                {question:"من كان أول رئيس للولايات المتحدة؟", options:["واشنطن","لينكولن","آدمز","جفرسون"], answer:0},
+                {question:"متى انتهت الإمبراطورية الرومانية الغربية؟", options:["476","1453","1492","395"], answer:0},
+                {question:"ما هو العام الذي سقط فيه جدار برلين؟", options:["1989","1991","1987","1995"], answer:0},
+                {question:"من قاد الثورة الفرنسية؟", options:["روبسبير","نابليون","لوك","ماري أنطوانيت"], answer:0},
+                {question:"متى تأسست الأمم المتحدة؟", options:["1945","1919","1939","1950"], answer:0},
+                {question:"من هو مؤسس الدولة العثمانية؟", options:["عثمان بن أرطغرل","محمد الفاتح","سليمان القانوني","علي"], answer:0},
+                {question:"أي سنة حصلت الثورة الصناعية الأولى؟", options:["1760","1800","1750","1700"], answer:0},
+                {question:"من اكتشف طريق رأس الرجاء الصالح؟", options:["بادروج","كولومبوس","ماجلان","دا غاما"], answer:3},
+                {question:"متى بدأت الحرب العالمية الأولى؟", options:["1914","1939","1918","1920"], answer:0},
+                {question:"من هو قائد الجيش المغولي الشهير؟", options:["جنكيز خان","هولاكو","تموجين","تيغر"], answer:0},
+                {question:"ما هي أول دولة استعمرت أمريكا الجنوبية؟", options:["إسبانيا","البرتغال","فرنسا","إنجلترا"], answer:0},
+                {question:"متى حدثت الثورة الروسية؟", options:["1917","1905","1922","1914"], answer:0},
+                {question:"من هو الفراعنة الشهير ببناء الهرم الأكبر؟", options:["خوفو","رمسيس","توت عنخ آمون","خفرع"], answer:0},
+                {question:"أين وقعت معركة واترلو؟", options:["بلجيكا","فرنسا","هولندا","ألمانيا"], answer:0},
+                {question:"من كتب تاريخ الرومان القديم؟", options:["ليفي","بلوتارخ","تاسيتوس","هيكتور"], answer:0},
+                {question:"متى بدأت الثورة الأمريكية؟", options:["1775","1789","1765","1783"], answer:0},
+                {question:"من كان قائد نابليون؟", options:["نابليون بنفسه","لودفيغ","روبرت","تشارلز"], answer:0},
+                {question:"أين تأسست الحضارة الفرعونية؟", options:["مصر","العراق","اليونان","روما"], answer:0},
+                {question:"متى حدثت الثورة الفرنسية؟", options:["1789","1776","1799","1804"], answer:0},
+        {question:"من كان آخر فرعون لمصر؟", options:["كليوباترا","رمسيس الثاني","توت عنخ آمون","أحمس"], answer:0},
+        {question:"متى انهارت الإمبراطورية السوفيتية؟", options:["1991","1989","1995","1990"], answer:0}
+                ]
+            },
+            'جغرافيا  🌍': {
+                icon: 'fa-globe',
+                color: 'bg-indigo-100',
+                textColor: 'text-indigo-800',
+                hoverColor: 'hover:bg-indigo-200',
+                questions: [
+                    {
+                        question: "ما هي أكبر قارة من حيث المساحة؟",
+                        options: ["أفريقيا", "أمريكا الشمالية", "آسيا", "أوروبا"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي بلد لديه أكبر عدد من البحيرات الطبيعية؟",
+                        options: ["كندا", "روسيا", "الولايات المتحدة", "فنلندا"],
+                        answer: 0
+                    },
+                    {
+                        question: "ما هو أطول نهر في العالم؟",
+                        options: ["الأمازون", "النيل", "اليانغتسي", "الميسيسيبي"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي صحراء هي الأكبر في العالم؟",
+                        options: ["الصحراء الكبرى", "الصحراء العربية", "صحراء جوبي", "أنتاركتيكا"],
+                        answer: 3
+                    },
+                    {
+                        question: "ما هي عاصمة كندا؟",
+                        options: ["تورونتو", "فانكوفر", "أوتاوا", "مونتريال"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي بلد هو جزيرة وقارة في نفس الوقت؟",
+                        options: ["جرينلاند", "أستراليا", "مدغشقر", "نيوزيلندا"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما هو أصغر بلد في العالم؟",
+                        options: ["موناكو", "الفاتيكان", "سان مارينو", "ليختنشتاين"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي جبل هو الأعلى في أفريقيا؟",
+                        options: ["جبل كينيا", "جبل كليمنجارو", "جبل ستانلي", "جبل ميرو"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما هي عاصمة اليابان؟",
+                        options: ["أوساكا", "كيوتو", "طوكيو", "هيروشيما"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي محيط هو الأكبر؟",
+                        options: ["الأطلسي", "الهندي", "المتجمد الشمالي", "الهادئ"],
+                        answer: 3
+                    },
+                 {question:"ما هي أكبر دولة في العالم من حيث المساحة؟", options:["الصين","كندا","روسيا","الولايات المتحدة"], answer:2},
+                {question:"ما هو أطول نهر في العالم؟", options:["الأمازون","النيل","الدانوب","الغانج"], answer:1},
+                {question:"ما هي عاصمة اليابان؟", options:["طوكيو","كيوتو","أوساكا","هيروشيما"], answer:0},
+                {question:"ما هو أعلى جبل في العالم؟", options:["إيفرست","كي 2","كانشينجونغا","ماكالو"], answer:0},
+                {question:"أي بحر يفصل أوروبا عن أفريقيا؟", options:["المتوسط","الأبيض","الأحمر","الشمالي"], answer:0},
+                {question:"ما هي أصغر دولة في العالم؟", options:["الفاتيكان","موناكو","سان مارينو","ليختنشتاين"], answer:0},
+                {question:"ما هي أكبر قارة سكاناً؟", options:["آسيا","أفريقيا","أوروبا","أمريكا"], answer:0},
+                {question:"ما هو المحيط الأكبر؟", options:["المحيط الهادئ","المحيط الأطلسي","المحيط الهندي","المحيط المتجمد الشمالي"], answer:0},
+                {question:"أي دولة بها أكبر عدد من الجزر؟", options:["السويد","النرويج","إندونيسيا","الفلبين"], answer:0},
+                {question:"ما هي عاصمة كندا؟", options:["أوتاوا","تورنتو","مونتريال","فانكوفر"], answer:0},
+                {question:"أين يقع جبل كيليمنجارو؟", options:["تنزانيا","كينيا","أوغندا","إثيوبيا"], answer:0},
+                {question:"أي دولة تتكون من 7 إمارات؟", options:["الإمارات","السعودية","قطر","الكويت"], answer:0},
+                {question:"ما هو أطول نهر في أوروبا؟", options:["الدانوب","الفولغا","الرين","التيمز"], answer:0},
+                {question:"أي دولة تقع بين فرنسا وألمانيا؟", options:["لوكسمبورغ","بلجيكا","هولندا","إيطاليا"], answer:0},
+                {question:"أين تقع صحراء جوبي؟", options:["الصين","منغوليا","الهند","أستراليا"], answer:0},
+                {question:"ما هي عاصمة أستراليا؟", options:["كانبيرا","سيدني","ملبورن","بيرث"], answer:0},
+                {question:"ما أكبر بحيرة في العالم؟", options:["كاسبيان","سوبيريور","فيكتوريا","هوشن"], answer:0},
+                {question:"ما هي أصغر قارة من حيث المساحة؟", options:["أستراليا","أوروبا","أمريكا الجنوبية","أفريقيا"], answer:0},
+                {question:"ما هو أطول نهر في أفريقيا؟", options:["النيل","الكونغو","الزامبيزي","النيجر"], answer:0},
+                {question:"ما هي أعلى شلالات في العالم؟", options:["أنجيل","نياغرا","فيكتوريا","إيغوازو"], answer:0},
+                {question:"ما هي عاصمة الهند؟", options:["نيودلهي","مومباي","بنغالور","كلكتا"], answer:0},
+        {question:"ما أكبر صحراء في آسيا؟", options:["جوبي","كاراكوم","ناميب","سيمار"], answer:0},
+        {question:"أي دولة تحد النرويج من الجنوب؟", options:["السويد","فنلندا","روسيا","الدنمارك"], answer:0}   
+                ]
+            },
+            'علوم 🔬': {
+                icon: 'fa-flask',
+                color: 'bg-pink-100',
+                textColor: 'text-pink-800',
+                hoverColor: 'hover:bg-pink-200',
+                questions: [
+                    {
+                        question: "ما هو الرمز الكيميائي للذهب؟",
+                        options: ["Go", "Gd", "Au", "Ag"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي كوكب يعرف باسم الكوكب الأحمر؟",
+                        options: ["الزهرة", "المريخ", "المشتري", "زحل"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما هي أقسى مادة طبيعية على الأرض؟",
+                        options: ["الذهب", "الحديد", "الماس", "الكوارتز"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي غاز تمتصه النباتات من الغلاف الجوي؟",
+                        options: ["الأكسجين", "النيتروجين", "ثاني أكسيد الكربون", "الهيدروجين"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما هو المكون الرئيسي للشمس؟",
+                        options: ["الحمم البركانية", "الهيدروجين", "الأكسجين", "اليورانيوم"],
+                        answer: 1
+                    },
+                    {
+                        question: "من هو العالم الذي طور نظرية الجاذبية؟",
+                        options: ["ألبرت أينشتاين", "إسحاق نيوتن", "غاليليو غاليلي", "نيكولا تيسلا"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما هو أكبر عضو في جسم الإنسان؟",
+                        options: ["الكبد", "الدماغ", "الجلد", "القلب"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي معدن يكون سائلاً في درجة حرارة الغرفة؟",
+                        options: ["الحديد", "الزئبق", "الذهب", "الفضة"],
+                        answer: 1
+                    },
+                    {
+                        question: "ما اسم دراسة الأحافير؟",
+                        options: ["علم الآثار", "علم الحفريات", "الجيولوجيا", "علم الأرصاد"],
+                        answer: 1
+                    },
+                    {
+                        question: "كم عدد العظام في جسم الإنسان البالغ؟",
+                        options: ["206", "300", "150", "500"],
+                        answer: 0
+                    },
+                    {question:"ما هو العنصر الكيميائي الذي يرمز له بـ O؟", options:["ذهب","أكسجين","هيدروجين","كربون"], answer:1},
+                {question:"كم عدد الكواكب في المجموعة الشمسية؟", options:["7","8","9","10"], answer:1},
+                {question:"ما هو الكوكب الأحمر؟", options:["المريخ","الزهرة","المشتري","زحل"], answer:0},
+                {question:"ما هو أسرع حيوان بحري؟", options:["السمك الشراعي","الدلفين","الحوت","القرش"], answer:0},
+                {question:"ما هو الغاز الذي نتنفسه؟", options:["الأكسجين","الهيدروجين","النيتروجين","الكربون"], answer:0},
+                {question:"ما هو أكبر عضو في جسم الإنسان؟", options:["الجلد","الكبد","القلب","الرئة"], answer:0},
+                {question:"كم عدد العظام في جسم الإنسان البالغ؟", options:["206","208","201","210"], answer:0},
+                {question:"ما هو أسرع عضو في جسم الإنسان؟", options:["العين","القلب","الدماغ","اليد"], answer:0},
+                {question:"ما هو أقوى عضلة في جسم الإنسان؟", options:["الفك","القلب","الفخذ","اللسان"], answer:0},
+                {question:"ما هو الحيوان الذي لا يملك دماغاً؟", options:["الإسفنج","السمك","القرش","الدلفين"], answer:0},
+                {question:"ما هو أطول عظم في جسم الإنسان؟", options:["الفخذ","العضد","الظنبوب","القص"], answer:0},
+                {question:"ما هو الجهاز المسؤول عن ضخ الدم؟", options:["القلب","الرئة","الكبد","الكلى"], answer:0},
+                {question:"ما هو الكوكب الأكبر في المجموعة الشمسية؟", options:["المشتري","زحل","الأرض","الزهرة"], answer:0},
+                {question:"أي من الكواكب له حلقات واضحة؟", options:["زحل","المريخ","الزهرة","المشتري"], answer:0},
+                {question:"ما هو أصغر كوكب في المجموعة الشمسية؟", options:["عطارد","المريخ","الزهرة","الأرض"], answer:0},
+                {question:"ما هو العضو المسؤول عن التوازن؟", options:["الأذن الداخلية","العين","الأنف","اللسان"], answer:0},
+                {question:"ما هو الغاز المستخدم في التنفس الصناعي؟", options:["الأكسجين","النيتروجين","الهيدروجين","الهيليوم"], answer:0},
+                {question:"ما هو الحيوان الذي ينام وهو واقف؟", options:["الحصان","الأسد","الفيل","الغزال"], answer:0},
+                {question:"ما هو أطول عظمة في الذراع؟", options:["العضد","الزند","الكعبرة","الكتف"], answer:0},
+                {question:"أي من هذه الكواكب هو الأقرب للشمس؟", options:["عطارد","الزهرة","الأرض","المريخ"], answer:0},
+                {question:"ما هو الكوكب المعروف بالكوكب الأزرق؟", options:["الأرض","المشتري","المريخ","زحل"], answer:0},
+        {question:"ما هو الغاز الأكثر وفرة في الغلاف الجوي؟", options:["النيتروجين","الأكسجين","الهيدروجين","ثاني أكسيد الكربون"], answer:0},
+        {question:"أي من هذه الفيروسات يسبب الإنفلونزا؟", options:["فيروس الإنفلونزا","فيروس الإيدز","فيروس كورونا","فيروس جدري"], answer:0}
+                ]
+            },
+            'معلومات عامة  🎲': {
+                icon: 'fa-dice',
+                color: 'bg-teal-100',
+                textColor: 'text-teal-800',
+                hoverColor: 'hover:bg-teal-200',
+                questions: [
+                    {
+                        question: "كم لونًا في قوس قزح؟",
+                        options: ["5", "6", "7", "8"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما اسم الجنية في بيتر بان؟",
+                        options: ["تينكر بيل", "ويندي", "آريل", "سندريلا"],
+                        answer: 0
+                    },
+                    {
+                        question: "في أي بلد تم اختراع الألعاب الأولمبية؟",
+                        options: ["إيطاليا", "فرنسا", "اليونان", "مصر"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي فيلم ديزني يحتوي على أغنية 'Let It Go'؟",
+                        options: ["تنجلد", "موانا", "فروزن", "بريف"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما اسم راعي البقر في لعبة توي ستوري؟",
+                        options: ["باز", "وودي", "ريكس", "سلينكي"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي فاكهة تعرف باسم 'ملك الفواكه'؟",
+                        options: ["تفاح", "موز", "مانجو", "دوريان"],
+                        answer: 3
+                    },
+                    {
+                        question: "ما هي اللغة الأكثر انتشارًا في العالم؟",
+                        options: ["الإنجليزية", "الإسبانية", "الماندرين", "الهندية"],
+                        answer: 2
+                    },
+                    {
+                        question: "أي بلد هو موطن الكنغر؟",
+                        options: ["نيوزيلندا", "جنوب أفريقيا", "أستراليا", "البرازيل"],
+                        answer: 2
+                    },
+                    {
+                        question: "ما اسم الساحر في سيد الخواتم؟",
+                        options: ["دمبلدور", "غاندالف", "ميرلين", "سارومان"],
+                        answer: 1
+                    },
+                    {
+                        question: "أي كوكب يعرف باسم 'نجمة الصباح'؟",
+                        options: ["المريخ", "الزهرة", "المشتري", "عطارد"],
+                        answer: 1
+                    },
+                    {question:"ما هي العملة الرسمية في اليابان؟", options:["يورو","دولار","ين","جنيه"], answer:2},
+                {question:"ما هو أسرع حيوان بري؟", options:["الفهد","الأسد","الغزال","الحصان"], answer:0},
+                {question:"ما هي أكبر قارة؟", options:["آسيا","أفريقيا","أوروبا","أمريكا"], answer:0},
+                {question:"أي دولة تُعرف بأرض الفراعنة؟", options:["مصر","اليونان","إيطاليا","تركيا"], answer:0},
+                {question:"ما هو أشهر متحف في باريس؟", options:["اللوفر","المتحف البريطاني","البرادو","المتحف المصري"], answer:0},
+                {question:"ما هي لغة البرازيل الرسمية؟", options:["البرتغالية","الإسبانية","الإنجليزية","الفرنسية"], answer:0},
+                {question:"ما هو أطول نهر في العالم؟", options:["النيل","الأمازون","الدانوب","الغانج"], answer:0},
+                {question:"أين يقع برج إيفل؟", options:["باريس","لندن","روما","برلين"], answer:0},
+                {question:"ما هو أكبر محيط؟", options:["المحيط الهادئ","المحيط الأطلسي","المحيط الهندي","المحيط المتجمد"], answer:0},
+                {question:"ما هي أكبر صحراء في العالم؟", options:["الصحراء الكبرى","جوبي","كاراكوم","ناميب"], answer:0},
+                {question:"ما هو أسرع حيوان بحري؟", options:["السمك الشراعي","الدلفين","الحوت","القرش"], answer:0},
+                {question:"ما هي العاصمة الرسمية لأستراليا؟", options:["كانبيرا","سيدني","ملبورن","بريسبان"], answer:0},
+                {question:"أين يقع تمثال الحرية؟", options:["نيويورك","لوس أنجلوس","شيكاغو","واشنطن"], answer:0},
+                {question:"ما هو أكبر كوكب في المجموعة الشمسية؟", options:["المشتري","زحل","الأرض","المريخ"], answer:0},
+                {question:"ما هي لغة الصين الرسمية؟", options:["الماندرين","الكانتونية","الإنجليزية","اليابانية"], answer:0},
+                {question:"أي دولة لديها أكبر عدد من السكان؟", options:["الصين","الهند","الولايات المتحدة","إندونيسيا"], answer:0},
+                {question:"ما هي أصغر قارة؟", options:["أستراليا","أوروبا","أفريقيا","أمريكا الجنوبية"], answer:0},
+                {question:"ما هو أعلى جبل في العالم؟", options:["إيفرست","كي 2","كانشينجونغا","ماكالو"], answer:0},
+                {question:"أين تقع البندقية؟", options:["إيطاليا","فرنسا","إسبانيا","اليونان"], answer:0},
+                {question:"ما هو الحيوان الوطني لكندا؟", options:["البيفر","الدب","الذئب","النسر"], answer:0},
+                {question:"ما هو أكبر كوكب في المجموعة الشمسية؟", options:["المشتري","زحل","الأرض","المريخ"], answer:0},
+        {question:"أين يقع تاج محل؟", options:["الهند","باكستان","بنغلاديش","نيبال"], answer:0},
+        {question:"ما هي عملة المملكة المتحدة؟", options:["الجنيه الإسترليني","اليورو","الدولار","الين"], answer:0}
+                ]
+            }
+        };
+
+        // Motivational messages in Arabic
+        const motivationalMessages = [
+            "أحسنت! 👍",
+            "ممتاز!  🌟",
+            "رائع!  🎉",
+            "لا بأس، حاول مجددًا!  💪",
+            "جيد جدًا!  👏",
+            "أنت ذكي!  🧠",
+            "استمر في المحاولة! ",
+            "أنت مذهل! ✨",
+            "عمل رائع!  🏆",
+            "أنت تتحسن!  📈"
+        ];
+
+        // DOM elements
+        const stepElements = {
+            0: document.getElementById('step-0'),
+            1: document.getElementById('step-1'),
+            2: document.getElementById('step-2'),
+            3: document.getElementById('step-3'),
+            4: document.getElementById('step-4'),
+            'final': document.getElementById('final-results'),
+            'online-host': document.getElementById('online-host'),
+            'online-join': document.getElementById('online-join')
+        };
+
+        // Game functions
+        function selectGameMode(mode) {
+            gameState.mode = mode;
+            
+            if (mode === 'online') {
+                const isHost = confirm("هل تريد استضافة لعبة؟ (موافق للمضيف، إلغاء للانضمام)");
+                if (isHost) {
+                    gameState.isHost = true;
+                    gameState.gameCode = Math.floor(100000 + Math.random() * 900000).toString();
+                    document.getElementById('game-code').textContent = gameState.gameCode;
+                    
+                    // Generate QR code
+                    const qrcodeDiv = document.getElementById('qrcode');
+                    qrcodeDiv.innerHTML = '';
+                    new QRCode(qrcodeDiv, {
+                        text: gameState.gameCode,
+                        width: 150,
+                        height: 150,
+                        colorDark: "#000000",
+                        colorLight: "#ffffff",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                    
+                    showStep('online-host');
+                } else {
+                    gameState.isHost = false;
+                    showStep('online-join');
+                }
+            } else if (mode === 'random') {
+                gameState.playerCount = 1;
+                gameState.players = ['لاعب 1'];
+                gameState.scores = {'لاعب 1': 0};
+                showStep(3);
+            } else {
+                showStep(1);
+            }
+        }
+
+        function setPlayerCount(count) {
+            gameState.playerCount = count;
+            gameState.players = [];
+            gameState.scores = {};
+            
+            const playerNameInputs = document.getElementById('player-name-inputs');
+            playerNameInputs.innerHTML = '';
+            
+            for (let i = 0; i < count; i++) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center';
+                div.innerHTML = `
+                    <label class="w-24 font-medium">لاعب ${i+1}:</label>
+                    <input type="text" id="player-${i}" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" placeholder="أدخل الاسم">
+                `;
+                playerNameInputs.appendChild(div);
+            }
+            
+            showStep(2);
+        }
+
+        function savePlayerNames() {
+            for (let i = 0; i < gameState.playerCount; i++) {
+                const name = document.getElementById(`player-${i}`).value.trim() || `لاعب ${i+1}`;
+                gameState.players.push(name);
+                gameState.scores[name] = 0;
+            }
+            
+            showStep(3);
+        }
+
+        function showStep(step) {
+            for (const key in stepElements) {
+                stepElements[key].classList.add('hidden');
+            }
+            
+            stepElements[step].classList.remove('hidden');
+            
+            if (step === 3) {
+                displayCategories();
+            } else if (step === 4) {
+                startGame();
+            }
+        }
+
+        function backToStep(step) {
+            showStep(step);
+        }
+
+        function displayCategories() {
+            const container = document.querySelector('#step-3 .grid');
+            container.innerHTML = '';
+            
+            for (const [name, details] of Object.entries(categories)) {
+                const card = document.createElement('div');
+                card.className = `rounded-xl p-6 cursor-pointer transition-all duration-300 card-hover ${details.color} ${details.hoverColor} ${details.textColor} text-center`;
+                card.innerHTML = `
+                    <i class="fas ${details.icon} text-5xl mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">${name}</h3>
+                `;
+                card.onclick = () => selectCategory(name);
+                container.appendChild(card);
+            }
+        }
+
+        function selectCategory(category) {
+            gameState.currentCategory = category;
+            gameState.questions = [...categories[category].questions];
+            gameState.usedQuestionIndices = [];
+            gameState.currentPlayerIndex = 0;
+            gameState.currentQuestionIndex = 0;
+            
+            showStep(4);
+        }
+
+        function selectRandomCategory() {
+            const categoryKeys = Object.keys(categories);
+            const randomCategory = categoryKeys[Math.floor(Math.random() * categoryKeys.length)];
+            selectCategory(randomCategory);
+        }
+
+        function startGame() {
+            gameState.currentPlayerIndex = 0;
+            gameState.currentQuestionIndex = 0;
+            
+            displayQuestion();
+            updatePlayerAndScore();
+        }
+
+        function displayQuestion() {
+            let availableIndices = [];
+            for (let i = 0; i < gameState.questions.length; i++) {
+                if (!gameState.usedQuestionIndices.includes(i)) {
+                    availableIndices.push(i);
+                }
+            }
+            
+            if (availableIndices.length === 0) {
+                endGame();
+                return;
+            }
+            
+            const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+            gameState.currentQuestionIndex = randomIndex;
+            gameState.usedQuestionIndices.push(randomIndex);
+            
+            const question = gameState.questions[randomIndex];
+            
+            document.getElementById('question-category').textContent = gameState.currentCategory;
+            document.getElementById('question-text').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'bg-white hover:bg-gray-100 text-gray-800 font-semibold py-3 px-4 border border-gray-300 rounded-lg text-right transition-all';
+                button.textContent = option;
+                button.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(button);
+            });
+            
+            document.getElementById('next-btn').classList.add('hidden');
+        }
+
+        function selectAnswer(selectedIndex) {
+            const question = gameState.questions[gameState.currentQuestionIndex];
+            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+            const optionButtons = document.querySelectorAll('#options-container button');
+            
+            optionButtons.forEach(button => {
+                button.disabled = true;
+            });
+            
+            optionButtons[selectedIndex].classList.add(selectedIndex === question.answer ? 'correct-answer' : 'wrong-answer');
+            
+            if (selectedIndex !== question.answer) {
+                optionButtons[question.answer].classList.add('show-correct');
+            }
+            
+            if (selectedIndex === question.answer) {
+                gameState.scores[currentPlayer] += 10;
+                showMotivationalMessage(true);
+            } else {
+                showMotivationalMessage(false);
+            }
+            
+            document.getElementById('next-btn').classList.remove('hidden');
+            updatePlayerAndScore();
+        }
+
+        function skipQuestion() {
+            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+            showMotivationalMessage(false);
+            
+            nextPlayer();
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            nextPlayer();
+            displayQuestion();
+        }
+
+        function nextPlayer() {
+            gameState.currentPlayerIndex = (gameState.currentPlayerIndex + 1) % gameState.players.length;
+            updatePlayerAndScore();
+        }
+
+        function updatePlayerAndScore() {
+            const currentPlayer = gameState.players[gameState.currentPlayerIndex];
+            document.getElementById('current-player').textContent = `اللاعب: ${currentPlayer}`;
+            
+            let scoreText = 'النقاط: ';
+            for (const [player, score] of Object.entries(gameState.scores)) {
+                scoreText += `${player}: ${score} | `;
+            }
+            document.getElementById('score-display').textContent = scoreText.slice(0, -3);
+        }
+
+        function showMotivationalMessage(isCorrect) {
+            const randomMessage = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+            console.log(isCorrect ? "إجابة صحيحة! " + randomMessage : "حاول مرة أخرى! " + randomMessage);
+        }
+
+        function endGame() {
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = '';
+            
+            const sortedScores = Object.entries(gameState.scores).sort((a, b) => b[1] - a[1]);
+            
+            sortedScores.forEach(([player, score], index) => {
+                const div = document.createElement('div');
+                div.className = 'bg-gray-100 rounded-lg p-4 flex justify-between items-center';
+                div.innerHTML = `
+                    <span class="font-semibold">${index + 1}. ${player}</span>
+                    <span class="bg-purple-100 text-purple-800 font-bold py-1 px-3 rounded-full">${score} نقطة</span>
+                `;
+                resultsContainer.appendChild(div);
+            });
+            
+            const maxScore = Math.max(...Object.values(gameState.scores));
+            const winners = sortedScores.filter(([_, score]) => score === maxScore);
+            
+            if (winners.length === 1) {
+                document.getElementById('encouragement-message').textContent = `مبروك ${winners[0][0]}! لقد فزت بـ ${maxScore} نقطة!`;
+            } else {
+                const winnerNames = winners.map(([name]) => name).join(' و ');
+                document.getElementById('encouragement-message').textContent = `تعادل! ${winnerNames} جميعهم سجلوا ${maxScore} نقطة!`;
+            }
+            
+            showStep('final');
+        }
+
+        function restartGame() {
+            for (const player in gameState.scores) {
+                gameState.scores[player] = 0;
+            }
+            
+            showStep(3);
+        }
+
+        function startOnlineGame() {
+            alert("في اللعبة الحقيقية، سيبدأ هذا اللعب عبر الإنترنت مع اللاعبين المتصلين. في هذا العرض، سنحاكي اللعب المحلي.");
+            
+            gameState.playerCount = 2;
+            gameState.players = ['لاعب عبر الإنترنت 1', 'لاعب عبر الإنترنت 2'];
+            gameState.scores = {'لاعب عبر الإنترنت 1': 0, 'لاعب عبر الإنترنت 2': 0};
+            
+            showStep(3);
+        }
+
+        function joinOnlineGame() {
+            const joinCode = document.getElementById('join-code').value;
+            if (!joinCode || joinCode.length !== 6) {
+                alert("الرجاء إدخال رمز لعبة صالح مكون من 6 أرقام");
+                return;
+            }
+            
+            alert("في اللعبة الحقيقية، سيتم توصيلك بلعبة المضيف. في هذا العرض، سنحاكي اللعب المحلي.");
+            
+            gameState.playerCount = 2;
+            gameState.players = ['مضيف اللعبة', 'أنت'];
+            gameState.scores = {'مضيف اللعبة': 0, 'أنت': 0};
+            
+            showStep(3);
+        }
+
+        // Initialize game
+        showStep(0);
+    </script>
+    
+</body>
+</html>
